@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask Fish Anything</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <!-- Custom CSS -->
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Ask your question</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#about">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#ask">Ask Me about this ....</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="fas fa-fish"></i></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container" id="about">
+        <!-- About content goes here -->
+    </div>
+    <div class="container" id="ask">
+        <form id="question-form" onsubmit="event.preventDefault(); askQuestion();">
+            <div class="form-group">
+                <label for="questionInput">Your question:</label>
+                <input type="text" class="form-control" id="questionInput" placeholder="Enter your question about fish here...">
+            </div>
+            <button type="submit" class="btn btn-primary">Ask</button>
+        </form>
+        
+        <script>
+            function askQuestion() {
+                var questionInput = document.getElementById('questionInput');
+                var question = questionInput.value;
+                fetch('http://localhost:5000/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        query: question
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    var answerDiv = document.getElementById('answer');
+                    var userText = document.createElement("p");
+                    userText.textContent = "User: " + question;
+                    var assistantText = document.createElement("p");
+                    assistantText.textContent = "Assistant: " + data.response;
+                    answerDiv.appendChild(userText);
+                    answerDiv.appendChild(assistantText);
+                    questionInput.value = '';
+                });
+            }
+            </script>
+                    <div id="answer">
+            <!-- The answer from GPT-4 will be inserted here -->
+        </div>
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
